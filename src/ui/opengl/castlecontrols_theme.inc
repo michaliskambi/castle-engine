@@ -256,6 +256,8 @@ begin
   FImagesPersistent[tiLoading].Image := Loading;
   FImagesPersistent[tiEdit].Image := Edit;
   FImagesPersistent[tiEdit].ProtectedSides.AllSides := 2;
+  FImagesPersistent[tiMemo].Image := Edit;
+  FImagesPersistent[tiMemo].ProtectedSides.AllSides := 2;
 end;
 
 destructor TCastleTheme.Destroy;

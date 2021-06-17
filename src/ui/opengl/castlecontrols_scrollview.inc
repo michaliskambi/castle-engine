@@ -19,8 +19,13 @@
   { Abstract user interface with a scrollbar.
     In most cases you want to use @link(TCastleScrollView) in your application,
     which is a more comfortable descendant of this class. }
+
+  { TCastleScrollViewCustom }
+
   TCastleScrollViewCustom = class(TCastleUserInterface)
   strict private
+    FActiveKeyHomeEnd:boolean;
+    FActiveCtrlHomeEnd:boolean;
     FScroll: Single;
     FScrollbarVisible: Boolean;
     { Rects in screen coordinates (like RenderRect),
@@ -28,14 +33,16 @@
     ScrollbarFrame, ScrollbarSlider: TFloatRectangle;
     ScrollBarDragging: Boolean;
     FKeyScrollSpeed, FWheelScrollSpeed: Single;
-    FScrollBarWidth: Single;
+    FScrollBarWidth,FScrollBarHeight: Single;
     FEnableDragging: Boolean;
     DragSinceLastUpdate, DragSpeed, TimeSinceDraggingStopped, TimeSinceDraggingStarted: Double;
     ScrollbarActive: Single;
     FTintScrollBarInactive: TCastleColor;
+    FVertical:boolean;
     procedure SetScroll(Value: Single);
     { Stop any movement due to inertial force. }
     procedure ResetInertialForce;
+    procedure SetVertical(Value:boolean);
   protected
     FScrollbarLeft: Boolean;
 
@@ -81,6 +88,7 @@
     { Scroll bar width, either from @link(ScrollBarWidth) or
       @link(TCastleTheme.ScrollBarWidth Theme.ScrollBarWidth). }
     function EffectiveScrollBarWidth: Single;
+    function EffectiveScrollBarHeight: Single;
   published
     { Speed of scrolling by arrow keys, in pixels (before UI scaling) per second. }
     property KeyScrollSpeed: Single read FKeyScrollSpeed write FKeyScrollSpeed default DefaultKeyScrollSpeed;
@@ -90,6 +98,7 @@
       Value of 0 means to use global default
       in @link(TCastleTheme.ScrollBarWidth Theme.ScrollBarWidth). }
     property ScrollBarWidth: Single read FScrollBarWidth write FScrollBarWidth default 0;
+        property ScrollBarHeight: Single read FScrollBarHeight write FScrollBarHeight default 0;
     { Position of the scroll bar.
       @definitionList(
         @itemLabel(@false)
@@ -100,6 +109,10 @@
           you have to specify ScrollArea.HorizontalAnchorDelta manually,
           e.g. ScrollArea.HorizontalAnchorDelta := ScrollBarWidth + Gap;)
       ) }
+    property ActiveKeyHomeEnd:Boolean read FActiveKeyHomeEnd write FActiveKeyHomeEnd default true;
+       {If ActiveKeyHomeEnd=True then scrolling with key Home and Key End will work}
+    property ActiveCtrlHomeEnd:Boolean read FActiveCtrlHomeEnd write FActiveCtrlHomeEnd default false;
+       {If ActiveCtrlHomeEnd=True then scrolling with key CtrlHome and Key CtrlEnd will work}
     property ScrollBarLeft: Boolean read FScrollBarLeft write FScrollBarLeft default false;
     { Enable scrolling by dragging @italic(anywhere) in the scroll area.
       This is usually suitable for mobile devices.
@@ -124,7 +137,7 @@
       You handle @link(TCastleScrollViewManual.OnChange) yourself,
       and interpret this value in whatever way you want. }
     property Scroll: Single read FScroll write SetScroll default 0;
-
+      property Horizontal: boolean read FVertical write  SetVertical default false;
   {$define read_interface_class}
   {$I auto_generated_persistent_vectors/tcastlescrollviewcustom_persistent_vectors.inc}
   {$undef read_interface_class}
@@ -227,7 +240,7 @@ begin
   FKeyScrollSpeed := DefaultKeyScrollSpeed;
   FWheelScrollSpeed := DefaultWheelScrollSpeed;
   FTintScrollBarInactive := White;
-
+  FVertical:=false;
   {$define read_implementation_constructor}
   {$I auto_generated_persistent_vectors/tcastlescrollviewcustom_persistent_vectors.inc}
   {$undef read_implementation_constructor}
@@ -274,6 +287,11 @@ begin
   TimeSinceDraggingStopped := 0;
 end;
 
+procedure TCastleScrollViewCustom.SetVertical(Value: boolean);
+begin
+  FVertical:=Value;
+end;
+
 procedure TCastleScrollViewCustom.Update(const SecondsPassed: Single;
   var HandleInput: boolean);
 
@@ -283,16 +301,22 @@ procedure TCastleScrollViewCustom.Update(const SecondsPassed: Single;
     SR: TFloatRectangle;
   begin
     SR := RenderRect;
-
+    if FVertical=False then
+    begin
     if FScrollbarLeft then
       ScrollbarFrame := SR.LeftPart(EffectiveScrollBarWidth * UIScale)
     else
       ScrollbarFrame := SR.RightPart(EffectiveScrollBarWidth * UIScale);
+    end else
+    begin
+     ScrollbarFrame := SR.BottomPart(EffectiveScrollBarHeight * UIScale);
+    end;
 
     ScrollbarSlider := ScrollbarFrame;
     if GetCompleteSize = 0 then
       FScrollBarVisible := false
     else
+      if Horizontal=False then
     begin
       ScrollbarSlider.Height := GetPageSize * SR.Height / GetCompleteSize;
       ScrollbarSlider.Height := Max(
@@ -306,14 +330,38 @@ procedure TCastleScrollViewCustom.Update(const SecondsPassed: Single;
           ScrollBarVisible := GetPageSize < GetCompleteSize;
         But this way makes it clear that MapRange below is valid,
         it will not divide by zero. }
+    end else
+    begin
+     ScrollbarSlider.Width := GetPageSize * SR.Width / GetCompleteSize;
+      ScrollbarSlider.Width := Max(
+        Theme.MinimumScrollbarSliderHeight * UIScale, ScrollbarSlider.Width);
+      // limit ScrollbarSlider.Width to not be taller then this control
+      ScrollbarSlider.Width := Min(
+        EffectiveHeightForChildren * UIScale, ScrollbarSlider.Width);
+
+      FScrollBarVisible := ScrollbarFrame.Width > ScrollbarSlider.Width + SingleEpsilon;
+      { equivalent would be to set
+          ScrollBarVisible := GetPageSize < GetCompleteSize;
+        But this way makes it clear that MapRange below is valid,
+        it will not divide by zero. }
     end;
     if FScrollBarVisible then
     begin
-      { above calculation of FScrollBarVisible must guarantee this. }
+     { above calculation of FScrollBarVisible must guarantee this. }
+    if Horizontal=False then
+    begin
+
       Assert(ScrollbarFrame.Height > ScrollbarSlider.Height);
       ScrollbarSlider.Bottom := ScrollbarSlider.Bottom +
         (MapRange(Scroll, ScrollMin, ScrollMax,
           ScrollbarFrame.Height - ScrollbarSlider.Height, 0));
+      end else
+      begin
+         Assert(ScrollbarFrame.Width > ScrollbarSlider.Width);
+      ScrollbarSlider.Left := ScrollbarSlider.Left +
+        (MapRange(Scroll, ScrollMin, ScrollMax,
+          ScrollbarFrame.Width - ScrollbarSlider.Width, 0));
+      end;
     end else
     begin
       ScrollBarDragging := false;
@@ -439,6 +487,7 @@ begin
      Event.IsMouseButton(buttonLeft) and
      ScrollbarFrame.Contains(Event.Position) then
   begin
+    if Horizontal=False then begin
     if Event.Position[1] < ScrollbarSlider.Bottom then
     begin
       Scroll := Scroll + GetPageSize;
@@ -450,10 +499,24 @@ begin
       ResetInertialForce;
     end else
       ScrollBarDragging := true;
-    Exit(ExclusiveEvents);
-  end;
-end;
 
+  end else
+  begin
+   if Event.Position[1] < ScrollbarSlider.Left then
+    begin
+      Scroll := Scroll + GetPageSize;
+      ResetInertialForce;
+    end else
+    if Event.Position[1] >= ScrollbarSlider.Right then
+    begin
+      Scroll := Scroll - GetPageSize;
+      ResetInertialForce;
+    end else
+      ScrollBarDragging := true;
+  end;
+   Exit(ExclusiveEvents);
+end;
+end;
 function TCastleScrollViewCustom.Press(const Event: TInputPressRelease): boolean;
 begin
   Result := inherited;
@@ -462,41 +525,61 @@ begin
   { if not ScrollBarVisible then there is no point in changing Scroll.
 
     This way we allow TStateDialog (that uses TDialog that uses TCastleScrollViewCustom)
-    descendants like TStateDialogKey to handle keys and mouse wheel.
+    descendants like TStateDialogKey to handle
+    K_PageDown, K_PageUp, K_Home and K_End keys and mouse wheel.
     And this is very good for MessageKey,
     when it's used e.g. to allow user to choose any TKey.
     Otherwise MessageKey would not be able to return
-    keyPageDown, keyPageUp, etc. keys. }
+    K_PageDown, K_PageUp, etc. keys. }
 
   if ScrollBarVisible then
     case Event.EventType of
       itKey:
         case Event.Key of
-          keyPageUp, keyNumpadPageUp:
+          K_PageUp,K_Numpad_PageUp:
             begin
               Scroll := Scroll - GetPageSize;
               ResetInertialForce;
               Result := ExclusiveEvents;
             end;
-          keyPageDown, keyNumpadPageDown:
+          K_PageDown,K_Numpad_PageDown:
             begin
               Scroll := Scroll + GetPageSize;
               ResetInertialForce;
               Result := ExclusiveEvents;
             end;
-          keyHome, keyNumpadHome:
+          K_Home,K_Numpad_Home:
+            begin
+            if ActiveKeyHomeEnd then
             begin
               Scroll := ScrollMin;
               ResetInertialForce;
               Result := ExclusiveEvents;
             end;
-          keyEnd, keyNumpadEnd:
+          if (ActiveCtrlHomeEnd) and (mkCtrl in Event.ModifiersDown) then
+          begin
+              Scroll := ScrollMin;
+              ResetInertialForce;
+              Result := ExclusiveEvents;
+          end;
+
+            end;
+          K_End,K_Numpad_End:
+            begin
+              if ActiveKeyHomeEnd then
             begin
               Scroll := ScrollMax;
               ResetInertialForce;
               Result := ExclusiveEvents;
             end;
-          else ;
+             if (ActiveCtrlHomeEnd) and (mkCtrl in Event.ModifiersDown) then
+          begin
+              Scroll := ScrollMax;
+              ResetInertialForce;
+              Result := ExclusiveEvents;
+            end;
+            end ;
+          else
         end;
       itMouseWheel:
         if Event.MouseWheelVertical then
@@ -551,8 +634,11 @@ begin
   begin
     { In scaled pixels, dragging by ScrollbarFrame.Height equals changing
       Scroll by GetCompleteSize. }
+  if Horizontal=False then
     Scroll := Scroll + GetCompleteSize *
-      (Event.OldPosition[1] - Event.Position[1]) / ScrollbarFrame.Height;
+      (Event.OldPosition[1] - Event.Position[1]) / ScrollbarFrame.Height
+      else  Scroll := Scroll + GetCompleteSize *
+      (Event.OldPosition[1] - Event.Position[1]) / ScrollbarFrame.Width;
     ResetInertialForce;
     Result := ExclusiveEvents;
   end else
@@ -581,6 +667,14 @@ begin
     Result := Theme.ScrollBarWidth
   else
     Result := ScrollBarWidth;
+end;
+
+function TCastleScrollViewCustom.EffectiveScrollBarHeight: Single;
+begin
+ if ScrollBarHeight = 0 then
+    Result := Theme.ScrollBarWidth
+  else
+    Result := ScrollBarHeight;
 end;
 
 {$define read_implementation_methods}

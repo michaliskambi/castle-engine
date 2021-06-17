@@ -29,7 +29,7 @@ uses Classes, Generics.Collections,
 
 type
   {$define read_interface}
-  {$I castlecontrols_initial_types.inc} // this must be included first
+  {$I castlecontrols_initial_types.inc}// this must be included first
 
   {$I castlecontrols_userinterfacefont.inc}
   {$I castlecontrols_button.inc}
@@ -51,9 +51,11 @@ type
   {$I castlecontrols_edit.inc}
   {$I castlecontrols_groups.inc}
   {$I castlecontrols_design.inc}
-  // Add more UI controls include files here.
+  {$I castlecontrols_memoundo.inc}
+  {$I castlecontrols_memo.inc}
+// Add more UI controls include files here.
 
-  // Keep the following (theme, uifont...) at the end, as they end the "type" clause.
+// Keep the following (theme, uifont...) at the end, as they end the "type" clause.
   {$I castlecontrols_theme.inc}
   {$I castlecontrols_uifont.inc}
   {$I castlecontrols_clipboard.inc}
@@ -69,7 +71,8 @@ uses SysUtils, Math, CastleControlsImages, CastleTextureFont_DjvSans_20,
   CastleUnicode;
 
 {$define read_implementation}
-{$I castlecontrols_uifont.inc} //< Keep this on top, to allow castlecontrols_userinterfacefont.inc to access internals
+{$I castlecontrols_uifont.inc}
+//< Keep this on top, to allow castlecontrols_userinterfacefont.inc to access internals
 {$I castlecontrols_userinterfacefont.inc}
 {$I castlecontrols_button.inc}
 {$I castlecontrols_panel.inc}
@@ -92,15 +95,16 @@ uses SysUtils, Math, CastleControlsImages, CastleTextureFont_DjvSans_20,
 {$I castlecontrols_design.inc}
 {$I castlecontrols_theme.inc}
 {$I castlecontrols_clipboard.inc}
+{$I castlecontrols_memoundo.inc}
+{$I castlecontrols_memo.inc}
 {$undef read_implementation}
 
 procedure Register;
 begin
   {$ifdef CASTLE_REGISTER_ALL_COMPONENTS_IN_LAZARUS}
-  RegisterComponents('Castle', [
-    TCastleButton, TCastleImageControl, TCastleRectangleControl,
-    TCastleLabel, TCastleCrosshair, TCastleIntegerSlider, TCastleFloatSlider,
-    TCastleScrollView, TCastleSwitchControl]);
+  RegisterComponents('Castle', [TCastleButton, TCastleImageControl,
+    TCastleRectangleControl, TCastleLabel, TCastleCrosshair,
+    TCastleIntegerSlider, TCastleFloatSlider, TCastleScrollView, TCastleSwitchControl]);
   {$endif}
 end;
 
@@ -125,7 +129,10 @@ initialization
   RegisterSerializableComponent(TCastleScrollViewManual, 'Scroll View Manual');
   RegisterSerializableComponent(TCastleCheckbox, 'Checkbox');
   RegisterSerializableComponent(TCastleSwitchControl, 'Switch');
-  RegisterSerializableComponent(TCastleDesign, 'Design (Reference Another castle-user-interface File)');
+  RegisterSerializableComponent(TCastleMemo, 'Memo');
+  RegisterSerializableComponent(TCastleDesign,
+    'Design (Reference Another castle-user-interface File)');
+
 finalization
   FreeAndNil(FTheme);
   FinalizationUIFonts;

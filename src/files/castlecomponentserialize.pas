@@ -1082,6 +1082,23 @@ begin
         TJSONArray(Res).Add(I)
     {$endif}
   end;
+
+  // Custom support of T3DCoords
+  if (Info^.PropType^.Kind = tkSet) and (Info^.PropType^.Name = 'TCollisionLayers')  then
+  begin
+    ValueOfSet := GetOrdProp(AObject, Info);
+    FreeAndNil(Res);
+    Res := TJSONArray.Create;
+    {$ifdef FPC}
+    for I := Low(TCollisionLayers) to High(TCollisionLayers) do
+      if (I in TCollisionLayers(ValueOfSet)) then
+        TJSONArray(Res).Add(I)
+    {$else}
+    for I := Low(TCollisionLayers) to High(TCollisionLayers) do
+      if (I in TCollisionLayers(ValueOfSet)) then
+        TJSONArray(Res).Add(I)
+    {$endif}
+  end;
 end;
 
 function ComponentToString(const C: TComponent): String;

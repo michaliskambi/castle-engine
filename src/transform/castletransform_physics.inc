@@ -537,6 +537,8 @@
     FAnimated: Boolean;
     FTrigger: Boolean;
     FCollisionDetectionType: TCollisionDetectionType;
+    FCollisionLayers: TCollisionLayers;
+    FCollisionMasks: TCollisionLayers;
     FExists: Boolean;
     FLockTranslation: T3DCoords;
     FLockRotation: T3DCoords;
@@ -561,6 +563,10 @@
     procedure UpdateLockTranslation;
     { Updates axes that have rotation lock and call Finish if needed }
     procedure UpdateLockRotation;
+    { Updates axes that have translation lock and call Finish if needed }
+    procedure UpdateCollisionLayers;
+    { Updates axes that have rotation lock and call Finish if needed }
+    procedure UpdateCollisionMasks;
 
     { Sets all values from Kraft to CGE private fields. Currently angular and
       linear velocity. }
@@ -583,6 +589,8 @@
     procedure SetOnCollisionExit(const AValue: TCollisionEvent);
 
     procedure SetCollisionDetectionType(const AValue: TCollisionDetectionType);
+    procedure SetCollisionLayers(const AValue: TCollisionLayers);
+    procedure SetCollisionMasks(const AValue: TCollisionLayers);
 
     procedure SetDynamic(const AValue: Boolean);
     procedure SetAnimated(const AValue: Boolean);
@@ -956,6 +964,11 @@
     { Sets CollisionDetectionMode in rigid body to Discrete or ContinuousSweep. }
     property CollisionDetectionType: TCollisionDetectionType read FCollisionDetectionType
       write SetCollisionDetectionType default cdtDiscrete;
+
+    property CollisionLayers: TCollisionLayers read FCollisionLayers
+      write SetCollisionLayers default [0];
+    property CollisionMasks: TCollisionLayers read FCollisionMasks
+      write SetCollisionMasks default [0];
 
     { Is this object affected by gravity. }
     property Gravity: Boolean read FGravity write SetGravity default true;
@@ -2588,6 +2601,8 @@ begin
   FState := crbsNotInitialized;
   FLockRotation := [];
   FLockTranslation := [];
+  FCollisionLayers := [0];
+  FCollisionMasks := [0];
 
   {$define read_implementation_constructor}
   {$I auto_generated_persistent_vectors/tcastlerigidbody_persistent_vectors.inc}
@@ -2723,6 +2738,8 @@ begin
 
   UpdateExistBody;
   UpdateCollisionDetectionType;
+  UpdateCollisionLayers;
+  UpdateCollisionMasks;
 
   if FTrigger then
     FKraftBody.Flags := FKraftBody.Flags + [krbfSensor];
@@ -3204,6 +3221,18 @@ begin
   end;
 end;
 
+procedure TCastleRigidBody.UpdateCollisionLayers;
+begin
+  if FKraftBody <> nil then
+    FKraftBody.CollisionGroups := TKraftRigidBodyCollisionGroups(FCollisionLayers);
+end;
+
+procedure TCastleRigidBody.UpdateCollisionMasks;
+begin
+  if FKraftBody <> nil then
+    FKraftBody.CollideWithCollisionGroups := TKraftRigidBodyCollisionGroups(FCollisionMasks);
+end;
+
 procedure TCastleRigidBody.SetMaximalAngularVelocity(const AValue: Single);
 begin
   FMaximalAngularVelocity := AValue;
@@ -3245,6 +3274,22 @@ begin
 
   FCollisionDetectionType := AValue;
   UpdateCollisionDetectionType;
+end;
+
+procedure TCastleRigidBody.SetCollisionLayers(const AValue: TCollisionLayers);
+begin
+  FCollisionLayers := AValue;
+  UpdateCollisionLayers;
+  if FKraftBody <> nil then
+    FKraftBody.CollisionGroups := TKraftRigidBodyCollisionGroups(FCollisionLayers);
+end;
+
+procedure TCastleRigidBody.SetCollisionMasks(const AValue: TCollisionLayers);
+begin
+  FCollisionMasks := AValue;
+  UpdateCollisionMasks;
+  if FKraftBody <> nil then
+    FKraftBody.CollideWithCollisionGroups := TKraftRigidBodyCollisionGroups(FCollisionMasks);
 end;
 
 procedure TCastleRigidBody.SetDynamic(const AValue: Boolean);

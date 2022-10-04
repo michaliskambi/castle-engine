@@ -1136,7 +1136,7 @@
 
   EConnectedTransformTheSameAsParent = class (Exception);
 
-  TJointHinge = class(TAbstractTwoBodiesJoint)
+  THingeJoint = class(TAbstractTwoBodiesJoint)
     private
       FKraftJointHinge: TKraftConstraintJointHinge;
       FMotorSpeed: Single;
@@ -1192,11 +1192,11 @@
         write SetMaxMotorTorque;
 
     {$define read_interface_class}
-    {$I auto_generated_persistent_vectors/tjointhinge_persistent_vectors.inc}
+    {$I auto_generated_persistent_vectors/thingejoint_persistent_vectors.inc}
     {$undef read_interface_class}
   end;
 
-  TJointRope = class(TAbstractTwoBodiesJoint)
+  TRopeJoint = class(TAbstractTwoBodiesJoint)
     private
       FKraftJointRope: TKraftConstraintJointRope;
       FAnchor: TVector3;
@@ -1238,13 +1238,13 @@
       property Distance: Single read FDistance write SetDistance;
 
     {$define read_interface_class}
-    {$I auto_generated_persistent_vectors/tjointrope_persistent_vectors.inc}
+    {$I auto_generated_persistent_vectors/tropejoint_persistent_vectors.inc}
     {$undef read_interface_class}
   end;
 
 {$ifdef CASTLE_EXPERIMENTAL_JOINTS}
 
-  TJointFixed = class(TAbstractTwoBodiesJoint)
+  TFixedJoint = class(TAbstractTwoBodiesJoint)
   private
     FKraftJointFixed: TKraftConstraintJointFixed;
     FAnchor: TVector3;
@@ -1273,13 +1273,13 @@
     property Anchor: TVector3 read FAnchor write SetAnchor;
 
   {$define read_interface_class}
-  {$I auto_generated_persistent_vectors/tjointfixed_persistent_vectors.inc}
+  {$I auto_generated_persistent_vectors/tfixedjoint_persistent_vectors.inc}
   {$undef read_interface_class}
   end;
 
 {$endif CASTLE_EXPERIMENTAL_JOINTS}
 
-  TJointBall = class(TAbstractTwoBodiesJoint)
+  TBallJoint = class(TAbstractTwoBodiesJoint)
   private
     FKraftJointBall: TKraftConstraintJointBallSocket;
     FAnchor: TVector3;
@@ -1308,11 +1308,11 @@
     property Anchor: TVector3 read FAnchor write SetAnchor;
 
   {$define read_interface_class}
-  {$I auto_generated_persistent_vectors/tjointball_persistent_vectors.inc}
+  {$I auto_generated_persistent_vectors/tballjoint_persistent_vectors.inc}
   {$undef read_interface_class}
   end;
 
-  TJointDistance = class(TAbstractTwoBodiesJoint)
+  TDistanceJoint = class(TAbstractTwoBodiesJoint)
   private
     FKraftJointDistance: TKraftConstraintJointDistance;
     FAnchor: TVector3;
@@ -1357,11 +1357,11 @@
     property DampingRatio: Single read FDampingRatio write SetDampingRatio;
 
   {$define read_interface_class}
-  {$I auto_generated_persistent_vectors/tjointdistance_persistent_vectors.inc}
+  {$I auto_generated_persistent_vectors/tdistancejoint_persistent_vectors.inc}
   {$undef read_interface_class}
   end;
 
-  TJointGrab = class (TAbstractOneBodyJoint)
+  TGrabJoint = class (TAbstractOneBodyJoint)
   private
     FDampingRatio: Single;
     FFrequencyHz: Single;
@@ -1401,13 +1401,13 @@
     property MaximalForce: Single read FMaximalForce write SetMaximalForce {$ifdef FPC}default MaxSingle{$endif};
 
   {$define read_interface_class}
-  {$I auto_generated_persistent_vectors/tjointgrab_persistent_vectors.inc}
+  {$I auto_generated_persistent_vectors/tgrabjoint_persistent_vectors.inc}
   {$undef read_interface_class}
   end;
 
 
 {$ifdef CASTLE_EXPERIMENTAL_JOINTS}
-  TJointPulley = class(TAbstractTwoBodiesJoint)
+  TPulleyJoint = class(TAbstractTwoBodiesJoint)
     private
       FKraftJointPulley: TKraftConstraintJointPulley;
       FWorldAnchor: TVector3;
@@ -1455,11 +1455,11 @@
       property Ratio: Single read FRatio write SetRatio {$ifdef FPC}default 1.0{$endif};
 
     {$define read_interface_class}
-    {$I auto_generated_persistent_vectors/tjointpulley_persistent_vectors.inc}
+    {$I auto_generated_persistent_vectors/tpulleyjoint_persistent_vectors.inc}
     {$undef read_interface_class}
   end;
 
-  TJointWorldPlaneDistance = class (TAbstractOneBodyJoint)
+  TWorldPlaneDistanceJoint = class (TAbstractOneBodyJoint)
   private
     FKraftJointWorldPlaneDistance: TKraftConstraintJointWorldPlaneDistance;
     FAnchor: TVector3;
@@ -1506,11 +1506,11 @@
     property DampingRatio: Single read FDampingRatio write SetDampingRatio;
 
   {$define read_interface_class}
-  {$I auto_generated_persistent_vectors/tjointworldplanedistance_persistent_vectors.inc}
+  {$I auto_generated_persistent_vectors/tworldplanedistancejoint_persistent_vectors.inc}
   {$undef read_interface_class}
   end;
 
-  TJointSlider = class (TAbstractTwoBodiesJoint)
+  TSliderJoint = class (TAbstractTwoBodiesJoint)
   private
     FKraftJointSlider: TKraftConstraintJointSlider;
 
@@ -1566,7 +1566,7 @@
     property MaxMotorForce: Single read FMaxMotorForce write SetMaxMotorForce;
 
   {$define read_interface_class}
-  {$I auto_generated_persistent_vectors/tjointslider_persistent_vectors.inc}
+  {$I auto_generated_persistent_vectors/tsliderjoint_persistent_vectors.inc}
   {$undef read_interface_class}
   end;
 {$endif CASTLE_EXPERIMENTAL_JOINTS}
@@ -4090,9 +4090,9 @@ begin
     Result := inherited PropertySections(PropertyName);
 end;
 
-{ TJointHinge ---------------------------------------------------------------- }
+{ THingeJoint ---------------------------------------------------------------- }
 
-procedure TJointHinge.SetAnchor(const AValue: TVector3);
+procedure THingeJoint.SetAnchor(const AValue: TVector3);
 begin
   if TVector3.Equals(FAnchor, AValue) then
     Exit;
@@ -4103,7 +4103,7 @@ begin
   RecreateKraftJoint;
 end;
 
-procedure TJointHinge.SetRotationAxis(const AValue: TVector3);
+procedure THingeJoint.SetRotationAxis(const AValue: TVector3);
 begin
   FRotationAxis := AValue;
   if FKraftJointHinge <> nil then
@@ -4111,7 +4111,7 @@ begin
       VectorToKraft(Parent.LocalToWorldDirection(FRotationAxis)));
 end;
 
-procedure TJointHinge.SetEnableLimits(const AValue: Boolean);
+procedure THingeJoint.SetEnableLimits(const AValue: Boolean);
 begin
   if FEnableLimits = AValue then
     Exit;
@@ -4122,21 +4122,21 @@ begin
     FKraftJointHinge.EnableLimit(AValue);
 end;
 
-procedure TJointHinge.SetMinAngleLimit(const AValue: Single);
+procedure THingeJoint.SetMinAngleLimit(const AValue: Single);
 begin
   FMinAngleLimit := AValue;
   if FKraftJointHinge <> nil then
     FKraftJointHinge.SetMinimumAngleLimit(FMinAngleLimit);
 end;
 
-procedure TJointHinge.SetMaxAngleLimit(const AValue: Single);
+procedure THingeJoint.SetMaxAngleLimit(const AValue: Single);
 begin
   FMaxAngleLimit := AValue;
   if FKraftJointHinge <> nil then
     FKraftJointHinge.SetMaximumAngleLimit(FMaxAngleLimit);
 end;
 
-procedure TJointHinge.SetEnableMotor(const AValue: Boolean);
+procedure THingeJoint.SetEnableMotor(const AValue: Boolean);
 begin
   if FEnableMotor = AValue then
     Exit;
@@ -4147,14 +4147,14 @@ begin
     FKraftJointHinge.EnableMotor(AValue);
 end;
 
-procedure TJointHinge.SetMotorSpeed(const AValue: Single);
+procedure THingeJoint.SetMotorSpeed(const AValue: Single);
 begin
   FMotorSpeed := AValue;
   if FKraftJointHinge <> nil then
     FKraftJointHinge.SetMotorSpeed(AValue);
 end;
 
-function TJointHinge.GetMotorSpeed: Single;
+function THingeJoint.GetMotorSpeed: Single;
 begin
   if FKraftJointHinge <> nil then
     FMotorSpeed := FKraftJointHinge.GetMotorSpeed;
@@ -4162,7 +4162,7 @@ begin
   Result := FMotorSpeed;
 end;
 
-procedure TJointHinge.SetMaxMotorTorque(const AValue: Single);
+procedure THingeJoint.SetMaxMotorTorque(const AValue: Single);
 begin
   if SameValue(FMaxMotorTorque, AValue) then
     Exit;
@@ -4172,12 +4172,12 @@ begin
     FKraftJointHinge.SetMaximalMotorTorque(FMaxMotorTorque);
 end;
 
-function TJointHinge.GetKraftJoint: TKraftConstraintJoint;
+function THingeJoint.GetKraftJoint: TKraftConstraintJoint;
 begin
   Result := FKraftJointHinge;
 end;
 
-procedure TJointHinge.CreateKraftJoint;
+procedure THingeJoint.CreateKraftJoint;
 begin
   FKraftJointHinge := TKraftConstraintJointHinge.Create(
     World.FKraftEngine,
@@ -4195,12 +4195,12 @@ begin
   );
 end;
 
-procedure TJointHinge.DeinitializeKraftJoint;
+procedure THingeJoint.DeinitializeKraftJoint;
 begin
   FreeAndNil(FKraftJointHinge);
 end;
 
-constructor TJointHinge.Create(AOwner: TComponent);
+constructor THingeJoint.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   NeedWorldChangeNotification := true;
@@ -4208,26 +4208,26 @@ begin
   FAnchor := CastleVectors.Vector3(0, 0, 0);
 
   {$define read_implementation_constructor}
-  {$I auto_generated_persistent_vectors/tjointhinge_persistent_vectors.inc}
+  {$I auto_generated_persistent_vectors/thingejoint_persistent_vectors.inc}
   {$undef read_implementation_constructor}
 end;
 
-destructor TJointHinge.Destroy;
+destructor THingeJoint.Destroy;
 begin
   {$define read_implementation_destructor}
-  {$I auto_generated_persistent_vectors/tjointhinge_persistent_vectors.inc}
+  {$I auto_generated_persistent_vectors/thingejoint_persistent_vectors.inc}
   {$undef read_implementation_destructor}
 
   inherited Destroy;
 end;
 
-procedure TJointHinge.WorldBeforeDetach;
+procedure THingeJoint.WorldBeforeDetach;
 begin
   FreeAndNil(FAnchorTransform);
   inherited WorldBeforeDetach;
 end;
 
-procedure TJointHinge.InternalSelectionStart(TransformsToSynchronize: TCastleTransformList);
+procedure THingeJoint.InternalSelectionStart(TransformsToSynchronize: TCastleTransformList);
 begin
   inherited InternalSelectionStart(TransformsToSynchronize);
 
@@ -4241,7 +4241,7 @@ begin
   end;
 end;
 
-procedure TJointHinge.RemoveAuxiliaryEditorUi(const TransformsToSynchronize: TCastleTransformList);
+procedure THingeJoint.RemoveAuxiliaryEditorUi(const TransformsToSynchronize: TCastleTransformList);
 begin
   if FAnchorTransform <> nil then
   begin
@@ -4252,7 +4252,7 @@ begin
   inherited RemoveAuxiliaryEditorUi(TransformsToSynchronize);
 end;
 
-function TJointHinge.PropertySections(const PropertyName: String
+function THingeJoint.PropertySections(const PropertyName: String
   ): TPropertySections;
 begin
   if (PropertyName = 'AnchorPersistent') or
@@ -4270,12 +4270,12 @@ end;
 
 
 {$define read_implementation_methods}
-{$I auto_generated_persistent_vectors/tjointhinge_persistent_vectors.inc}
+{$I auto_generated_persistent_vectors/thingejoint_persistent_vectors.inc}
 {$undef read_implementation_methods}
 
-{ TJointRope --------------------------------------------------------------- }
+{ TRopeJoint --------------------------------------------------------------- }
 
-procedure TJointRope.SetAnchor(const AValue: TVector3);
+procedure TRopeJoint.SetAnchor(const AValue: TVector3);
 begin
   if TVector3.Equals(FAnchor, AValue) then
     Exit;
@@ -4286,7 +4286,7 @@ begin
   RecreateKraftJoint;
 end;
 
-procedure TJointRope.SetConnectedAnchor(const AValue: TVector3);
+procedure TRopeJoint.SetConnectedAnchor(const AValue: TVector3);
 begin
   if TVector3.Equals(FConnectedAnchor, AValue) then
     Exit;
@@ -4297,7 +4297,7 @@ begin
   RecreateKraftJoint;
 end;
 
-procedure TJointRope.SetDistance(const AValue: Single);
+procedure TRopeJoint.SetDistance(const AValue: Single);
 begin
   if SameValue(FDistance, AValue) then
     Exit;
@@ -4305,12 +4305,12 @@ begin
   RecreateKraftJoint;
 end;
 
-function TJointRope.GetKraftJoint: TKraftConstraintJoint;
+function TRopeJoint.GetKraftJoint: TKraftConstraintJoint;
 begin
   Result := FKraftJointRope;
 end;
 
-procedure TJointRope.CreateKraftJoint;
+procedure TRopeJoint.CreateKraftJoint;
 begin
   FKraftJointRope := TKraftConstraintJointRope.Create(
     World.FKraftEngine,
@@ -4323,12 +4323,12 @@ begin
   );
 end;
 
-procedure TJointRope.DeinitializeKraftJoint;
+procedure TRopeJoint.DeinitializeKraftJoint;
 begin
   FreeAndNil(FKraftJointRope);
 end;
 
-procedure TJointRope.OnConnectedTransformFree(const Sender: TFreeNotificationObserver);
+procedure TRopeJoint.OnConnectedTransformFree(const Sender: TFreeNotificationObserver);
 begin
   { Remove connected transform anchor visualisation because
     its parent is freed }
@@ -4337,7 +4337,7 @@ begin
   inherited OnConnectedTransformFree(Sender);
 end;
 
-constructor TJointRope.Create(AOwner: TComponent);
+constructor TRopeJoint.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   NeedWorldChangeNotification := true;
@@ -4345,27 +4345,27 @@ begin
   FConnectedAnchor := CastleVectors.Vector3(0, 0, 0);
 
   {$define read_implementation_constructor}
-  {$I auto_generated_persistent_vectors/tjointrope_persistent_vectors.inc}
+  {$I auto_generated_persistent_vectors/tropejoint_persistent_vectors.inc}
   {$undef read_implementation_constructor}
 end;
 
-destructor TJointRope.Destroy;
+destructor TRopeJoint.Destroy;
 begin
   {$define read_implementation_destructor}
-  {$I auto_generated_persistent_vectors/tjointrope_persistent_vectors.inc}
+  {$I auto_generated_persistent_vectors/tropejoint_persistent_vectors.inc}
   {$undef read_implementation_destructor}
 
   inherited Destroy;
 end;
 
-procedure TJointRope.WorldBeforeDetach;
+procedure TRopeJoint.WorldBeforeDetach;
 begin
   FreeAndNil(FAnchorTransform);
   FreeAndNil(FConnectedAnchorTransform);
   inherited WorldBeforeDetach;
 end;
 
-procedure TJointRope.InternalSelectionStart(
+procedure TRopeJoint.InternalSelectionStart(
   TransformsToSynchronize: TCastleTransformList);
 begin
   inherited InternalSelectionStart(TransformsToSynchronize);
@@ -4389,7 +4389,7 @@ begin
   end;
 end;
 
-function TJointRope.PropertySections(const PropertyName: String
+function TRopeJoint.PropertySections(const PropertyName: String
   ): TPropertySections;
 begin
   if (PropertyName = 'AnchorPersistent') or
@@ -4400,7 +4400,7 @@ begin
     Result := inherited PropertySections(PropertyName);
 end;
 
-procedure TJointRope.RemoveAuxiliaryEditorUi(const TransformsToSynchronize:
+procedure TRopeJoint.RemoveAuxiliaryEditorUi(const TransformsToSynchronize:
   TCastleTransformList);
 begin
   if FAnchorTransform <> nil then
@@ -4419,14 +4419,14 @@ begin
 end;
 
 {$define read_implementation_methods}
-{$I auto_generated_persistent_vectors/tjointrope_persistent_vectors.inc}
+{$I auto_generated_persistent_vectors/tropejoint_persistent_vectors.inc}
 {$undef read_implementation_methods}
 
 
 {$ifdef CASTLE_EXPERIMENTAL_JOINTS}
-{ TJointFixed --------------------------------------------------------------- }
+{ TFixedJoint --------------------------------------------------------------- }
 
-procedure TJointFixed.SetAnchor(const AValue: TVector3);
+procedure TFixedJoint.SetAnchor(const AValue: TVector3);
 begin
   if TVector3.Equals(FAnchor, AValue) then
     Exit;
@@ -4437,12 +4437,12 @@ begin
   RecreateKraftJoint;
 end;
 
-function TJointFixed.GetKraftJoint: TKraftConstraintJoint;
+function TFixedJoint.GetKraftJoint: TKraftConstraintJoint;
 begin
   Result := FKraftJointFixed;
 end;
 
-procedure TJointFixed.CreateKraftJoint;
+procedure TFixedJoint.CreateKraftJoint;
 begin
   FKraftJointFixed := TKraftConstraintJointFixed.Create(
     World.FKraftEngine,
@@ -4453,37 +4453,37 @@ begin
   );
 end;
 
-procedure TJointFixed.DeinitializeKraftJoint;
+procedure TFixedJoint.DeinitializeKraftJoint;
 begin
   FreeAndNil(FKraftJointFixed);
 end;
 
-constructor TJointFixed.Create(AOwner: TComponent);
+constructor TFixedJoint.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   NeedWorldChangeNotification := true;
   FAnchor := CastleVectors.Vector3(0, 0, 0);
   {$define read_implementation_constructor}
-  {$I auto_generated_persistent_vectors/tjointfixed_persistent_vectors.inc}
+  {$I auto_generated_persistent_vectors/tfixedjoint_persistent_vectors.inc}
   {$undef read_implementation_constructor}
 end;
 
-destructor TJointFixed.Destroy;
+destructor TFixedJoint.Destroy;
 begin
   {$define read_implementation_destructor}
-  {$I auto_generated_persistent_vectors/tjointfixed_persistent_vectors.inc}
+  {$I auto_generated_persistent_vectors/tfixedjoint_persistent_vectors.inc}
   {$undef read_implementation_destructor}
 
   inherited Destroy;
 end;
 
-procedure TJointFixed.WorldBeforeDetach;
+procedure TFixedJoint.WorldBeforeDetach;
 begin
   FreeAndNil(FAnchorTransform);
   inherited WorldBeforeDetach;
 end;
 
-procedure TJointFixed.InternalSelectionStart(
+procedure TFixedJoint.InternalSelectionStart(
   TransformsToSynchronize: TCastleTransformList);
 begin
   inherited InternalSelectionStart(TransformsToSynchronize);
@@ -4498,7 +4498,7 @@ begin
   end;
 end;
 
-procedure TJointFixed.RemoveAuxiliaryEditorUi(
+procedure TFixedJoint.RemoveAuxiliaryEditorUi(
   const TransformsToSynchronize: TCastleTransformList);
 begin
   if FAnchorTransform <> nil then
@@ -4510,7 +4510,7 @@ begin
   inherited RemoveAuxiliaryEditorUi(TransformsToSynchronize);
 end;
 
-function TJointFixed.PropertySections(const PropertyName: String
+function TFixedJoint.PropertySections(const PropertyName: String
   ): TPropertySections;
 begin
   if (PropertyName = 'AnchorPersistent') then
@@ -4520,14 +4520,14 @@ begin
 end;
 
 {$define read_implementation_methods}
-{$I auto_generated_persistent_vectors/tjointfixed_persistent_vectors.inc}
+{$I auto_generated_persistent_vectors/tfixedjoint_persistent_vectors.inc}
 {$undef read_implementation_methods}
 
 {$endif CASTLE_EXPERIMENTAL_JOINTS}
 
-{ TJointBall --------------------------------------------------------------- }
+{ TBallJoint --------------------------------------------------------------- }
 
-procedure TJointBall.SetAnchor(const AValue: TVector3);
+procedure TBallJoint.SetAnchor(const AValue: TVector3);
 begin
   if TVector3.Equals(FAnchor, AValue) then
     Exit;
@@ -4538,12 +4538,12 @@ begin
   RecreateKraftJoint;
 end;
 
-function TJointBall.GetKraftJoint: TKraftConstraintJoint;
+function TBallJoint.GetKraftJoint: TKraftConstraintJoint;
 begin
   Result := FKraftJointBall;
 end;
 
-procedure TJointBall.CreateKraftJoint;
+procedure TBallJoint.CreateKraftJoint;
 begin
   FKraftJointBall := TKraftConstraintJointBallSocket.Create(
     World.FKraftEngine,
@@ -4554,37 +4554,37 @@ begin
   );
 end;
 
-procedure TJointBall.DeinitializeKraftJoint;
+procedure TBallJoint.DeinitializeKraftJoint;
 begin
   FreeAndNil(FKraftJointBall);
 end;
 
-constructor TJointBall.Create(AOwner: TComponent);
+constructor TBallJoint.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   NeedWorldChangeNotification := true;
   FAnchor := CastleVectors.Vector3(0, 0, 0);
   {$define read_implementation_constructor}
-  {$I auto_generated_persistent_vectors/tjointball_persistent_vectors.inc}
+  {$I auto_generated_persistent_vectors/tballjoint_persistent_vectors.inc}
   {$undef read_implementation_constructor}
 end;
 
-destructor TJointBall.Destroy;
+destructor TBallJoint.Destroy;
 begin
   {$define read_implementation_destructor}
-  {$I auto_generated_persistent_vectors/tjointball_persistent_vectors.inc}
+  {$I auto_generated_persistent_vectors/tballjoint_persistent_vectors.inc}
   {$undef read_implementation_destructor}
 
   inherited Destroy;
 end;
 
-procedure TJointBall.WorldBeforeDetach;
+procedure TBallJoint.WorldBeforeDetach;
 begin
   FreeAndNil(FAnchorTransform);
   inherited WorldBeforeDetach;
 end;
 
-procedure TJointBall.InternalSelectionStart(
+procedure TBallJoint.InternalSelectionStart(
   TransformsToSynchronize: TCastleTransformList);
 begin
   inherited InternalSelectionStart(TransformsToSynchronize);
@@ -4599,7 +4599,7 @@ begin
   end;
 end;
 
-procedure TJointBall.RemoveAuxiliaryEditorUi(
+procedure TBallJoint.RemoveAuxiliaryEditorUi(
   const TransformsToSynchronize: TCastleTransformList);
 begin
   if FAnchorTransform <> nil then
@@ -4611,7 +4611,7 @@ begin
   inherited RemoveAuxiliaryEditorUi(TransformsToSynchronize);
 end;
 
-function TJointBall.PropertySections(const PropertyName: String
+function TBallJoint.PropertySections(const PropertyName: String
   ): TPropertySections;
 begin
   if (PropertyName = 'AnchorPersistent') then
@@ -4621,34 +4621,34 @@ begin
 end;
 
 {$define read_implementation_methods}
-{$I auto_generated_persistent_vectors/tjointball_persistent_vectors.inc}
+{$I auto_generated_persistent_vectors/tballjoint_persistent_vectors.inc}
 {$undef read_implementation_methods}
 
-{ TJointDistance ------------------------------------------------------------- }
+{ TDistanceJoint ------------------------------------------------------------- }
 
-procedure TJointDistance.SetAnchor(const AValue: TVector3);
+procedure TDistanceJoint.SetAnchor(const AValue: TVector3);
 begin
   if TVector3.Equals(FAnchor, AValue) then
     Exit;
 
   FAnchor := AValue;
   if FAnchorTransform <> nil then
-    TTemporaryJointAnchor(FAnchorTransform).Value := FAnchor;
+    TTemporaryJointAnchor(FAnchorTransform).Value := AValue;
   RecreateKraftJoint;
 end;
 
-procedure TJointDistance.SetConnectedAnchor(const AValue: TVector3);
+procedure TDistanceJoint.SetConnectedAnchor(const AValue: TVector3);
 begin
   if TVector3.Equals(FConnectedAnchor, AValue) then
     Exit;
 
   FConnectedAnchor := AValue;
   if FConnectedAnchorTransform <> nil then
-    TTemporaryJointConnectedAnchor(FConnectedAnchorTransform).Value := FAnchor;
+    TTemporaryJointConnectedAnchor(FConnectedAnchorTransform).Value := AValue;
   RecreateKraftJoint;
 end;
 
-procedure TJointDistance.SetFrequencyHz(const AValue: Single);
+procedure TDistanceJoint.SetFrequencyHz(const AValue: Single);
 begin
   if SameValue(FFrequencyHz, AValue) then
     Exit;
@@ -4657,7 +4657,7 @@ begin
   RecreateKraftJoint;
 end;
 
-procedure TJointDistance.SetDampingRatio(const AValue: Single);
+procedure TDistanceJoint.SetDampingRatio(const AValue: Single);
 begin
   if SameValue(FDampingRatio, AValue) then
     Exit;
@@ -4666,12 +4666,12 @@ begin
   RecreateKraftJoint;
 end;
 
-function TJointDistance.GetKraftJoint: TKraftConstraintJoint;
+function TDistanceJoint.GetKraftJoint: TKraftConstraintJoint;
 begin
   Result := FKraftJointDistance;
 end;
 
-procedure TJointDistance.CreateKraftJoint;
+procedure TDistanceJoint.CreateKraftJoint;
 begin
   Assert(FKraftJointDistance = nil, 'Second joint initialization');
   FKraftJointDistance := TKraftConstraintJointDistance.Create(
@@ -4686,39 +4686,39 @@ begin
   );
 end;
 
-procedure TJointDistance.DeinitializeKraftJoint;
+procedure TDistanceJoint.DeinitializeKraftJoint;
 begin
   FreeAndNil(FKraftJointDistance);
 end;
 
-constructor TJointDistance.Create(AOwner: TComponent);
+constructor TDistanceJoint.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   NeedWorldChangeNotification := true;
   FAnchor := CastleVectors.Vector3(0, 0, 0);
   FConnectedAnchor := CastleVectors.Vector3(0, 0, 0);
   {$define read_implementation_constructor}
-  {$I auto_generated_persistent_vectors/tjointdistance_persistent_vectors.inc}
+  {$I auto_generated_persistent_vectors/tdistancejoint_persistent_vectors.inc}
   {$undef read_implementation_constructor}
 end;
 
-destructor TJointDistance.Destroy;
+destructor TDistanceJoint.Destroy;
 begin
   {$define read_implementation_destructor}
-  {$I auto_generated_persistent_vectors/tjointdistance_persistent_vectors.inc}
+  {$I auto_generated_persistent_vectors/tdistancejoint_persistent_vectors.inc}
   {$undef read_implementation_destructor}
 
   inherited Destroy;
 end;
 
-procedure TJointDistance.WorldBeforeDetach;
+procedure TDistanceJoint.WorldBeforeDetach;
 begin
   FreeAndNil(FAnchorTransform);
   FreeAndNil(FConnectedAnchorTransform);
   inherited WorldBeforeDetach;
 end;
 
-procedure TJointDistance.InternalSelectionStart(
+procedure TDistanceJoint.InternalSelectionStart(
   TransformsToSynchronize: TCastleTransformList);
 begin
   inherited InternalSelectionStart(TransformsToSynchronize);
@@ -4742,7 +4742,7 @@ begin
   end;
 end;
 
-procedure TJointDistance.RemoveAuxiliaryEditorUi(
+procedure TDistanceJoint.RemoveAuxiliaryEditorUi(
   const TransformsToSynchronize: TCastleTransformList);
 begin
   if FAnchorTransform <> nil then
@@ -4760,7 +4760,7 @@ begin
   inherited RemoveAuxiliaryEditorUi(TransformsToSynchronize);
 end;
 
-function TJointDistance.PropertySections(const PropertyName: String
+function TDistanceJoint.PropertySections(const PropertyName: String
   ): TPropertySections;
 begin
   if (PropertyName = 'AnchorPersistent') or
@@ -4774,12 +4774,12 @@ end;
 
 
 {$define read_implementation_methods}
-{$I auto_generated_persistent_vectors/tjointdistance_persistent_vectors.inc}
+{$I auto_generated_persistent_vectors/tdistancejoint_persistent_vectors.inc}
 {$undef read_implementation_methods}
 
-{ TJointGrab ----------------------------------------------------------------- }
+{ TGrabJoint ----------------------------------------------------------------- }
 
-procedure TJointGrab.SetWorldPoint(const AValue: TVector3);
+procedure TGrabJoint.SetWorldPoint(const AValue: TVector3);
 begin
   FWorldPoint := AValue;
 
@@ -4795,7 +4795,7 @@ begin
   end;
 end;
 
-procedure TJointGrab.SetFrequencyHz(const AValue: Single);
+procedure TGrabJoint.SetFrequencyHz(const AValue: Single);
 begin
   if SameValue(FFrequencyHz, AValue) then
     Exit;
@@ -4804,7 +4804,7 @@ begin
   RecreateKraftJoint;
 end;
 
-procedure TJointGrab.SetDampingRatio(const AValue: Single);
+procedure TGrabJoint.SetDampingRatio(const AValue: Single);
 begin
   if SameValue(FDampingRatio, AValue) then
     Exit;
@@ -4813,7 +4813,7 @@ begin
   RecreateKraftJoint;
 end;
 
-procedure TJointGrab.SetMaximalForce(const AValue: Single);
+procedure TGrabJoint.SetMaximalForce(const AValue: Single);
 begin
   if SameValue(FMaximalForce, AValue) then
     Exit;
@@ -4823,12 +4823,12 @@ begin
     FKraftJointGrab.SetMaximalForce(AValue);
 end;
 
-function TJointGrab.GetKraftJoint: TKraftConstraintJoint;
+function TGrabJoint.GetKraftJoint: TKraftConstraintJoint;
 begin
   Result := FKraftJointGrab;
 end;
 
-procedure TJointGrab.CreateKraftJoint;
+procedure TGrabJoint.CreateKraftJoint;
 begin
   Assert(FKraftJointGrab = nil, 'Second joint initialization');
   FKraftJointGrab := TKraftConstraintJointGrab.Create(
@@ -4841,12 +4841,12 @@ begin
   );
 end;
 
-procedure TJointGrab.DeinitializeKraftJoint;
+procedure TGrabJoint.DeinitializeKraftJoint;
 begin
   FreeAndNil(FKraftJointGrab);
 end;
 
-constructor TJointGrab.Create(AOwner: TComponent);
+constructor TGrabJoint.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   NeedWorldChangeNotification := true;
@@ -4855,26 +4855,26 @@ begin
   FFrequencyHz := 5.0;
   FDampingRatio := 0.7;
   {$define read_implementation_constructor}
-  {$I auto_generated_persistent_vectors/tjointgrab_persistent_vectors.inc}
+  {$I auto_generated_persistent_vectors/tgrabjoint_persistent_vectors.inc}
   {$undef read_implementation_constructor}
 end;
 
-destructor TJointGrab.Destroy;
+destructor TGrabJoint.Destroy;
 begin
   {$define read_implementation_destructor}
-  {$I auto_generated_persistent_vectors/tjointgrab_persistent_vectors.inc}
+  {$I auto_generated_persistent_vectors/tgrabjoint_persistent_vectors.inc}
   {$undef read_implementation_destructor}
 
   inherited Destroy;
 end;
 
-procedure TJointGrab.WorldBeforeDetach;
+procedure TGrabJoint.WorldBeforeDetach;
 begin
   FreeAndNil(FWorldPointTransform);
   inherited WorldBeforeDetach;
 end;
 
-procedure TJointGrab.InternalSelectionStart(
+procedure TGrabJoint.InternalSelectionStart(
   TransformsToSynchronize: TCastleTransformList);
 begin
   inherited InternalSelectionStart(TransformsToSynchronize);
@@ -4889,7 +4889,7 @@ begin
   end;
 end;
 
-procedure TJointGrab.RemoveAuxiliaryEditorUi(
+procedure TGrabJoint.RemoveAuxiliaryEditorUi(
   const TransformsToSynchronize: TCastleTransformList);
 begin
   inherited RemoveAuxiliaryEditorUi(TransformsToSynchronize);
@@ -4901,7 +4901,7 @@ begin
   end;
 end;
 
-function TJointGrab.PropertySections(const PropertyName: String
+function TGrabJoint.PropertySections(const PropertyName: String
   ): TPropertySections;
 begin
   if (PropertyName = 'WorldPointPersistent') or
@@ -4914,13 +4914,13 @@ begin
 end;
 
 {$define read_implementation_methods}
-{$I auto_generated_persistent_vectors/tjointgrab_persistent_vectors.inc}
+{$I auto_generated_persistent_vectors/tgrabjoint_persistent_vectors.inc}
 {$undef read_implementation_methods}
 
 {$ifdef CASTLE_EXPERIMENTAL_JOINTS}
-{ TJointPulley ---------------------------------------------------------------- }
+{ TPulleyJoint ---------------------------------------------------------------- }
 
-procedure TJointPulley.SetWorldAnchor(const AValue: TVector3);
+procedure TPulleyJoint.SetWorldAnchor(const AValue: TVector3);
 begin
   if TVector3.PerfectlyEquals(FWorldAnchor, AValue) then
     Exit;
@@ -4933,7 +4933,7 @@ begin
   RecreateKraftJoint;
 end;
 
-procedure TJointPulley.SetConnectedWorldAnchor(const AValue: TVector3);
+procedure TPulleyJoint.SetConnectedWorldAnchor(const AValue: TVector3);
 begin
   if TVector3.PerfectlyEquals(FConnectedWorldAnchor, AValue) then
     Exit;
@@ -4946,7 +4946,7 @@ begin
   RecreateKraftJoint;
 end;
 
-procedure TJointPulley.SetWorldGroundAnchor(const AValue: TVector3);
+procedure TPulleyJoint.SetWorldGroundAnchor(const AValue: TVector3);
 begin
   if TVector3.PerfectlyEquals(FWorldGroundAnchor, AValue) then
     Exit;
@@ -4959,7 +4959,7 @@ begin
   RecreateKraftJoint;
 end;
 
-procedure TJointPulley.SetConnectedWorldGroundAnchor(const AValue: TVector3
+procedure TPulleyJoint.SetConnectedWorldGroundAnchor(const AValue: TVector3
   );
 begin
   if TVector3.PerfectlyEquals(FConnectedWorldGroundAnchor, AValue) then
@@ -4973,7 +4973,7 @@ begin
   RecreateKraftJoint;
 end;
 
-procedure TJointPulley.SetRatio(const AValue: Single);
+procedure TPulleyJoint.SetRatio(const AValue: Single);
 begin
   if SameValue(FRatio, AValue) then
     Exit;
@@ -4982,12 +4982,12 @@ begin
   RecreateKraftJoint;
 end;
 
-function TJointPulley.GetKraftJoint: TKraftConstraintJoint;
+function TPulleyJoint.GetKraftJoint: TKraftConstraintJoint;
 begin
   Result := FKraftJointPulley;
 end;
 
-procedure TJointPulley.CreateKraftJoint;
+procedure TPulleyJoint.CreateKraftJoint;
 begin
   Assert(FKraftJointPulley = nil, 'Second joint initialization');
   FKraftJointPulley := TKraftConstraintJointPulley.Create(
@@ -5003,12 +5003,12 @@ begin
   );
 end;
 
-procedure TJointPulley.DeinitializeKraftJoint;
+procedure TPulleyJoint.DeinitializeKraftJoint;
 begin
   FreeAndNil(FKraftJointPulley);
 end;
 
-constructor TJointPulley.Create(AOwner: TComponent);
+constructor TPulleyJoint.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   NeedWorldChangeNotification := true;
@@ -5026,20 +5026,20 @@ begin
   FRatio := 1.0;
 
   {$define read_implementation_constructor}
-  {$I auto_generated_persistent_vectors/tjointpulley_persistent_vectors.inc}
+  {$I auto_generated_persistent_vectors/tpulleyjoint_persistent_vectors.inc}
   {$undef read_implementation_constructor}
 end;
 
-destructor TJointPulley.Destroy;
+destructor TPulleyJoint.Destroy;
 begin
   {$define read_implementation_destructor}
-  {$I auto_generated_persistent_vectors/tjointpulley_persistent_vectors.inc}
+  {$I auto_generated_persistent_vectors/tpulleyjoint_persistent_vectors.inc}
   {$undef read_implementation_destructor}
 
   inherited Destroy;
 end;
 
-procedure TJointPulley.WorldBeforeDetach;
+procedure TPulleyJoint.WorldBeforeDetach;
 begin
   FreeAndNil(FWorldAnchorTransform);
   FreeAndNil(FConnectedWorldAnchorTransform);
@@ -5048,7 +5048,7 @@ begin
   inherited WorldBeforeDetach;
 end;
 
-procedure TJointPulley.InternalSelectionStart(
+procedure TPulleyJoint.InternalSelectionStart(
   TransformsToSynchronize: TCastleTransformList);
 begin
   inherited InternalSelectionStart(TransformsToSynchronize);
@@ -5090,7 +5090,7 @@ begin
   end;
 end;
 
-procedure TJointPulley.RemoveAuxiliaryEditorUi(
+procedure TPulleyJoint.RemoveAuxiliaryEditorUi(
   const TransformsToSynchronize: TCastleTransformList);
 begin
   if FWorldAnchorTransform <> nil then
@@ -5120,7 +5120,7 @@ begin
   inherited RemoveAuxiliaryEditorUi(TransformsToSynchronize);
 end;
 
-function TJointPulley.PropertySections(const PropertyName: String
+function TPulleyJoint.PropertySections(const PropertyName: String
   ): TPropertySections;
 begin
   if (PropertyName = 'WorldAnchorPersistent') or
@@ -5134,12 +5134,12 @@ begin
 end;
 
 {$define read_implementation_methods}
-{$I auto_generated_persistent_vectors/tjointpulley_persistent_vectors.inc}
+{$I auto_generated_persistent_vectors/tpulleyjoint_persistent_vectors.inc}
 {$undef read_implementation_methods}
 
-{ TJointWorldPlaneDistance --------------------------------------------------- }
+{ TWorldPlaneDistanceJoint --------------------------------------------------- }
 
-procedure TJointWorldPlaneDistance.SetAnchor(const AValue: TVector3);
+procedure TWorldPlaneDistanceJoint.SetAnchor(const AValue: TVector3);
 begin
   if TVector3.Equals(FAnchor, AValue) then
     Exit;
@@ -5148,7 +5148,7 @@ begin
   RecreateKraftJoint;
 end;
 
-procedure TJointWorldPlaneDistance.SetPlaneNormal(const AValue: TVector3);
+procedure TWorldPlaneDistanceJoint.SetPlaneNormal(const AValue: TVector3);
 begin
   if TVector3.Equals(FPlaneNormal, AValue) then
     Exit;
@@ -5157,7 +5157,7 @@ begin
   RecreateKraftJoint;
 end;
 
-procedure TJointWorldPlaneDistance.SetPlaneDistance(const AValue: Single);
+procedure TWorldPlaneDistanceJoint.SetPlaneDistance(const AValue: Single);
 begin
   if SameValue(FPlaneDistance, AValue) then
     Exit;
@@ -5166,7 +5166,7 @@ begin
   RecreateKraftJoint;
 end;
 
-procedure TJointWorldPlaneDistance.SetWorldDistance(const AValue: Single);
+procedure TWorldPlaneDistanceJoint.SetWorldDistance(const AValue: Single);
 begin
   if SameValue(FWorldDistance, AValue) then
     Exit;
@@ -5176,7 +5176,7 @@ begin
     FKraftJointWorldPlaneDistance.SetWorldDistance(FWorldDistance);
 end;
 
-procedure TJointWorldPlaneDistance.SetFrequencyHz(const AValue: Single);
+procedure TWorldPlaneDistanceJoint.SetFrequencyHz(const AValue: Single);
 begin
   if SameValue(FFrequencyHz, AValue) then
     Exit;
@@ -5185,7 +5185,7 @@ begin
   RecreateKraftJoint;
 end;
 
-procedure TJointWorldPlaneDistance.SetDampingRatio(const AValue: Single);
+procedure TWorldPlaneDistanceJoint.SetDampingRatio(const AValue: Single);
 begin
   if SameValue(FDampingRatio, AValue) then
     Exit;
@@ -5194,7 +5194,7 @@ begin
   RecreateKraftJoint;
 end;
 
-procedure TJointWorldPlaneDistance.DoubleSidedWorldPlane(const AValue: Boolean);
+procedure TWorldPlaneDistanceJoint.DoubleSidedWorldPlane(const AValue: Boolean);
 begin
   if FDoubleSidedWorldPlane = AValue then
     Exit;
@@ -5203,12 +5203,12 @@ begin
   RecreateKraftJoint;
 end;
 
-function TJointWorldPlaneDistance.GetKraftJoint: TKraftConstraintJoint;
+function TWorldPlaneDistanceJoint.GetKraftJoint: TKraftConstraintJoint;
 begin
   Result := FKraftJointWorldPlaneDistance;
 end;
 
-procedure TJointWorldPlaneDistance.CreateKraftJoint;
+procedure TWorldPlaneDistanceJoint.CreateKraftJoint;
 begin
   Assert(FKraftJointWorldPlaneDistance = nil, 'Second joint initialization');
   FKraftJointWorldPlaneDistance := TKraftConstraintJointWorldPlaneDistance.Create(
@@ -5226,12 +5226,12 @@ begin
   );
 end;
 
-procedure TJointWorldPlaneDistance.DeinitializeKraftJoint;
+procedure TWorldPlaneDistanceJoint.DeinitializeKraftJoint;
 begin
   FreeAndNil(FKraftJointWorldPlaneDistance);
 end;
 
-constructor TJointWorldPlaneDistance.Create(AOwner: TComponent);
+constructor TWorldPlaneDistanceJoint.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FAnchor := CastleVectors.Vector3(0, 0, 0);
@@ -5239,26 +5239,26 @@ begin
   NeedWorldChangeNotification := true;
 
   {$define read_implementation_constructor}
-  {$I auto_generated_persistent_vectors/tjointworldplanedistance_persistent_vectors.inc}
+  {$I auto_generated_persistent_vectors/tworldplanedistancejoint_persistent_vectors.inc}
   {$undef read_implementation_constructor}
 end;
 
-destructor TJointWorldPlaneDistance.Destroy;
+destructor TWorldPlaneDistanceJoint.Destroy;
 begin
   {$define read_implementation_destructor}
-  {$I auto_generated_persistent_vectors/tjointworldplanedistance_persistent_vectors.inc}
+  {$I auto_generated_persistent_vectors/tworldplanedistancejoint_persistent_vectors.inc}
   {$undef read_implementation_destructor}
 
   inherited Destroy;
 end;
 
-procedure TJointWorldPlaneDistance.WorldBeforeDetach;
+procedure TWorldPlaneDistanceJoint.WorldBeforeDetach;
 begin
   FreeAndNil(FAnchorTransform);
   inherited WorldBeforeDetach;
 end;
 
-procedure TJointWorldPlaneDistance.InternalSelectionStart(
+procedure TWorldPlaneDistanceJoint.InternalSelectionStart(
   TransformsToSynchronize: TCastleTransformList);
 begin
   inherited InternalSelectionStart(TransformsToSynchronize);
@@ -5273,7 +5273,7 @@ begin
   end;
 end;
 
-procedure TJointWorldPlaneDistance.RemoveAuxiliaryEditorUi(
+procedure TWorldPlaneDistanceJoint.RemoveAuxiliaryEditorUi(
   const TransformsToSynchronize: TCastleTransformList);
 begin
   if FAnchorTransform <> nil then
@@ -5285,7 +5285,7 @@ begin
   inherited RemoveAuxiliaryEditorUi(TransformsToSynchronize);
 end;
 
-function TJointWorldPlaneDistance.PropertySections(const PropertyName: String
+function TWorldPlaneDistanceJoint.PropertySections(const PropertyName: String
   ): TPropertySections;
 begin
   if (PropertyName = 'AnchorPersistent') or
@@ -5300,13 +5300,13 @@ begin
 end;
 
 {$define read_implementation_methods}
-{$I auto_generated_persistent_vectors/tjointworldplanedistance_persistent_vectors.inc}
+{$I auto_generated_persistent_vectors/tworldplanedistancejoint_persistent_vectors.inc}
 {$undef read_implementation_methods}
 
 
-{ TJointSlider }
+{ TSliderJoint }
 
-procedure TJointSlider.SetWorldAnchor(const AValue: TVector3);
+procedure TSliderJoint.SetWorldAnchor(const AValue: TVector3);
 begin
   if TVector3.PerfectlyEquals(FWorldAnchor, AValue) then
     Exit;
@@ -5317,7 +5317,7 @@ begin
   RecreateKraftJoint;
 end;
 
-procedure TJointSlider.SetWorldSliderAxis(const AValue: TVector3);
+procedure TSliderJoint.SetWorldSliderAxis(const AValue: TVector3);
 begin
   if TVector3.PerfectlyEquals(FWorldSliderAxis, AValue) then
     Exit;
@@ -5326,7 +5326,7 @@ begin
   RecreateKraftJoint;
 end;
 
-procedure TJointSlider.SetEnableLimits(const AValue: Boolean);
+procedure TSliderJoint.SetEnableLimits(const AValue: Boolean);
 begin
   if FEnableLimits = AValue then
     Exit;
@@ -5337,21 +5337,21 @@ begin
     FKraftJointSlider.EnableLimit(AValue);
 end;
 
-procedure TJointSlider.SetMinTranslationLimit(const AValue: Single);
+procedure TSliderJoint.SetMinTranslationLimit(const AValue: Single);
 begin
   FMinTranslationLimit := AValue;
   if FKraftJointSlider <> nil then
     FKraftJointSlider.SetMinimumTranslationLimit(FMinTranslationLimit);
 end;
 
-procedure TJointSlider.SetMaxTranslationLimit(const AValue: Single);
+procedure TSliderJoint.SetMaxTranslationLimit(const AValue: Single);
 begin
   FMaxTranslationLimit := AValue;
   if FKraftJointSlider <> nil then
     FKraftJointSlider.SetMaximumTranslationLimit(FMaxTranslationLimit);
 end;
 
-procedure TJointSlider.SetEnableMotor(const AValue: Boolean);
+procedure TSliderJoint.SetEnableMotor(const AValue: Boolean);
 begin
   if FEnableMotor = AValue then
     Exit;
@@ -5362,14 +5362,14 @@ begin
     FKraftJointSlider.EnableMotor(AValue);
 end;
 
-procedure TJointSlider.SetMotorSpeed(const AValue: Single);
+procedure TSliderJoint.SetMotorSpeed(const AValue: Single);
 begin
   FMotorSpeed := AValue;
   if FKraftJointSlider <> nil then
     FKraftJointSlider.SetMotorSpeed(AValue);
 end;
 
-function TJointSlider.GetMotorSpeed: Single;
+function TSliderJoint.GetMotorSpeed: Single;
 begin
   if FKraftJointSlider <> nil then
     FMotorSpeed := FKraftJointSlider.GetMotorSpeed;
@@ -5377,7 +5377,7 @@ begin
   Result := FMotorSpeed;
 end;
 
-procedure TJointSlider.SetMaxMotorForce(const AValue: Single);
+procedure TSliderJoint.SetMaxMotorForce(const AValue: Single);
 begin
   if SameValue(FMaxMotorForce, AValue) then
     Exit;
@@ -5387,12 +5387,12 @@ begin
     FKraftJointSlider.SetMaximalMotorForce(FMaxMotorForce);
 end;
 
-function TJointSlider.GetKraftJoint: TKraftConstraintJoint;
+function TSliderJoint.GetKraftJoint: TKraftConstraintJoint;
 begin
   Result := FKraftJointSlider;
 end;
 
-procedure TJointSlider.CreateKraftJoint;
+procedure TSliderJoint.CreateKraftJoint;
 begin
   FKraftJointSlider := TKraftConstraintJointSlider.Create(
     World.FKraftEngine,
@@ -5410,12 +5410,12 @@ begin
   );
 end;
 
-procedure TJointSlider.DeinitializeKraftJoint;
+procedure TSliderJoint.DeinitializeKraftJoint;
 begin
   FreeAndNil(FKraftJointSlider);
 end;
 
-constructor TJointSlider.Create(AOwner: TComponent);
+constructor TSliderJoint.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   NeedWorldChangeNotification := true;
@@ -5423,26 +5423,26 @@ begin
   FWorldAnchor := CastleVectors.Vector3(0, 0, 0);
 
   {$define read_implementation_constructor}
-  {$I auto_generated_persistent_vectors/tjointslider_persistent_vectors.inc}
+  {$I auto_generated_persistent_vectors/tsliderjoint_persistent_vectors.inc}
   {$undef read_implementation_constructor}
 end;
 
-destructor TJointSlider.Destroy;
+destructor TSliderJoint.Destroy;
 begin
   {$define read_implementation_destructor}
-  {$I auto_generated_persistent_vectors/tjointslider_persistent_vectors.inc}
+  {$I auto_generated_persistent_vectors/tsliderjoint_persistent_vectors.inc}
   {$undef read_implementation_destructor}
 
   inherited Destroy;
 end;
 
-procedure TJointSlider.WorldBeforeDetach;
+procedure TSliderJoint.WorldBeforeDetach;
 begin
   FreeAndNil(FWorldAnchorTransform);
   inherited WorldBeforeDetach;
 end;
 
-procedure TJointSlider.InternalSelectionStart(
+procedure TSliderJoint.InternalSelectionStart(
   TransformsToSynchronize: TCastleTransformList);
 begin
   inherited InternalSelectionStart(TransformsToSynchronize);
@@ -5457,7 +5457,7 @@ begin
   end;
 end;
 
-procedure TJointSlider.RemoveAuxiliaryEditorUi(
+procedure TSliderJoint.RemoveAuxiliaryEditorUi(
   const TransformsToSynchronize: TCastleTransformList);
 begin
   inherited RemoveAuxiliaryEditorUi(TransformsToSynchronize);
@@ -5469,7 +5469,7 @@ begin
   end;
 end;
 
-function TJointSlider.PropertySections(const PropertyName: String
+function TSliderJoint.PropertySections(const PropertyName: String
   ): TPropertySections;
 begin
   if (PropertyName = 'WorldAnchorPersistent') or
@@ -5486,7 +5486,7 @@ begin
 end;
 
 {$define read_implementation_methods}
-{$I auto_generated_persistent_vectors/tjointslider_persistent_vectors.inc}
+{$I auto_generated_persistent_vectors/tsliderjoint_persistent_vectors.inc}
 {$undef read_implementation_methods}
 
 {$endif CASTLE_EXPERIMENTAL_JOINTS}

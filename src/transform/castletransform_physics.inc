@@ -3461,7 +3461,7 @@ begin
   if (Parent.World <> nil) and (not Parent.World.EnablePhysics) then
     Exit;
 
-  UpdateCollides(Parent);
+  //UpdateCollides(Parent);
   if Dynamic then
   begin
     { This is not called with Animated because Kraft Kinematic Bodies are never

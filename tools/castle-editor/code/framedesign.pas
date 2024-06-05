@@ -55,24 +55,61 @@ type
 
   { Frame to visually design component hierarchy. }
   TDesignFrame = class(TFrame)
+    ActionChangeHeightMapSize: TAction;
+    ActionSaveTerrainAs: TAction;
+    ActionSaveTerrain: TAction;
+    ActionChooseLevelTerrainTool: TAction;
+    ActionChooseLowerTerrainTool: TAction;
+    ActionChooseRaiseTerrainTool: TAction;
+    ActionEditTerrain: TAction;
     ActionApiReferenceOfCurrent: TAction;
     ActionPlayStop: TAction;
     ActionSimulationPauseUnpause: TAction;
     ActionSimulationPlayStop: TAction;
     ActionListDesign: TActionList;
+    ButtonHeightMapChangeSize: TButton;
+    ButtonSaveTerrain: TButton;
+    ButtonSaveTerrainAs: TButton;
+    ButtonStartFinishEditMode: TButton;
     ButtonResetTransformation: TButton;
     ButtonClearTranslation: TButton;
     ButtonPlayStop: TSpeedButton;
     ButtonApiReferenceForCurrent: TSpeedButton;
     EditFindInHierarchy: TEdit;
+    FloatSpinRaiseRingThickness: TFloatSpinEdit;
+    FloatSpinLowerRingThickness: TFloatSpinEdit;
+    FloatSpinLevelRingThickness: TFloatSpinEdit;
+    GroupBoxHeightMapSize: TGroupBox;
+    GroupBoxRaiseTerrainSettings: TGroupBox;
+    GroupBoxLowerTerrainSettings: TGroupBox;
+    GroupBoxLevelTerrainSettings: TGroupBox;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    LabelMaxHeight1: TLabel;
+    LabelRaiseRingThickness: TLabel;
+    LabelLowerRingThickness: TLabel;
+    LabelRaiseRingThickness1: TLabel;
+    LabelStrength: TLabel;
     LabelPhysics: TLabel;
     LabelPlayStop: TLabel;
+    LabelStrength1: TLabel;
+    LabelMaxHeight: TLabel;
+    LabelStrength2: TLabel;
+    LabelStrength3: TLabel;
+    LabelStrength4: TLabel;
+    LabelStrength5: TLabel;
     LabelViewport: TLabel;
     LabelHeaderUi: TLabel;
     LabelEventsInfo: TLabel;
     LabelSimulation: TLabel;
     LabelSizeInfo: TLabel;
     MemoInfo: TMemo;
+    PanelEditTerrainSave: TPanel;
+    PanelEditTerrain: TPanel;
+    PanelExtraTools: TPanel;
     PanelSpinEditAllowVerticalCentering: TPanel;
     SeparatorBeforeChangeClass: TMenuItem;
     MenuItemChangeClassUserInterface: TMenuItem;
@@ -118,6 +155,40 @@ type
     ButtonTranslateMode: TSpeedButton;
     ButtonRotateMode: TSpeedButton;
     ButtonScaleMode: TSpeedButton;
+    SpeedButtonLowerCircle: TSpeedButton;
+    SpeedButtonLowerCone: TSpeedButton;
+    SpeedButtonLowerCylinder: TSpeedButton;
+    SpeedButtonLowerFixedSquare: TSpeedButton;
+    SpeedButtonLowerPyramid: TSpeedButton;
+    SpeedButtonLowerRing: TSpeedButton;
+    SpeedButtonLowerSquare: TSpeedButton;
+    SpeedButtonLevelCircle: TSpeedButton;
+    SpeedButtonLevelCone: TSpeedButton;
+    SpeedButtonLevelPyramid: TSpeedButton;
+    SpeedButtonLevelSquare: TSpeedButton;
+    SpeedButtonRaiseTerrain: TSpeedButton;
+    SpeedButtonLowerTerrain: TSpeedButton;
+    SpeedButtonLevelTerrain: TSpeedButton;
+    SpeedButtonRaiseFixedSquare: TSpeedButton;
+    SpeedButtonRaiseSquare: TSpeedButton;
+    SpeedButtonRaisePyramid: TSpeedButton;
+    SpeedButtonRaiseCircle: TSpeedButton;
+    SpeedButtonRaiseCone: TSpeedButton;
+    SpeedButtonRaiseRing: TSpeedButton;
+    SpeedButtonRaiseCylinder: TSpeedButton;
+    SpinEditHeightMapWidth: TSpinEdit;
+    SpinEditHeightMapHeight: TSpinEdit;
+    SpinEditLowerBrushRotation: TSpinEdit;
+    SpinEditLowerBrushSize: TSpinEdit;
+    SpinEditLevelBrushRotation: TSpinEdit;
+    SpinEditLevelBrushSize: TSpinEdit;
+    SpinEditRaiseMaxHeight: TSpinEdit;
+    SpinEditRaiseBrushSize: TSpinEdit;
+    SpinEditLevelHeight: TSpinEdit;
+    SpinEditRaiseStrength: TSpinEdit;
+    SpinEditRaiseBrushRotation: TSpinEdit;
+    SpinEditLowerStrength: TSpinEdit;
+    SpinEditLevelStrength: TSpinEdit;
     SpinEditSnap: TSpinEdit;
     Splitter1: TSplitter;
     TabLayoutScrollBox: TScrollBox;
@@ -130,8 +201,17 @@ type
     TabInfo: TTabSheet;
     UpdateObjectInspector: TTimer;
     procedure ActionApiReferenceOfCurrentExecute(Sender: TObject);
+    procedure ActionChangeHeightMapSizeExecute(Sender: TObject);
+    procedure ActionChangeHeightMapSizeUpdate(Sender: TObject);
+    procedure ActionChooseLevelTerrainToolExecute(Sender: TObject);
+    procedure ActionChooseLowerTerrainToolExecute(Sender: TObject);
+    procedure ActionChooseRaiseTerrainToolExecute(Sender: TObject);
+    procedure ActionEditTerrainExecute(Sender: TObject);
+    procedure ActionEditTerrainUpdate(Sender: TObject);
     procedure ActionPlayStopExecute(Sender: TObject);
     procedure ActionPlayStopUpdate(Sender: TObject);
+    procedure ActionSaveTerrainAsExecute(Sender: TObject);
+    procedure ActionSaveTerrainExecute(Sender: TObject);
     procedure ActionSimulationPauseUnpauseExecute(Sender: TObject);
     procedure ActionSimulationPauseUnpauseUpdate(Sender: TObject);
     procedure ActionSimulationPlayStopExecute(Sender: TObject);
@@ -172,6 +252,7 @@ type
     procedure PerformUndoRedo(const UHE: TUndoHistoryElement);
     procedure PerformRedo;
     procedure PerformUndo;
+    procedure SpinEditHeightMapWidthChange(Sender: TObject);
     procedure UpdateObjectInspectorTimer(Sender: TObject);
   protected
     procedure SetParent(AParent: TWinControl); override;
@@ -276,6 +357,11 @@ type
       LastSelected: TComponentList;
       FShowColliders: Boolean;
       FindActive: Boolean;
+
+      FIsEditingTerrain: Boolean;
+      FTerrainLevelHeight: Byte;
+      FIsFirstTerrainLevelFrame: Boolean;
+      FWasTerrainUrlUpdate: Boolean;
 
     { Create and add to the designed parent a new component,
       whose type best matches currently selected file in SourceShellList.
@@ -539,6 +625,9 @@ type
       This way e.g. VisualizeTransformSelected also shows
       the transformation of selected behavior. }
     function CurrentTransform: TCastleTransform;
+
+    procedure UpdateTerrainEditMode;
+    procedure UpdateChoosenTerrainTool;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
@@ -664,6 +753,8 @@ type
       @nil if none. }
     property CurrentViewport: TCastleViewport read FCurrentViewport;
 
+    property IsEditingTerrain: Boolean read FIsEditingTerrain;
+
     procedure ViewportViewAxis(const Dir, Up: TVector3);
     procedure ViewportViewAll;
     procedure ViewportViewSelected;
@@ -707,7 +798,7 @@ uses
   CastleUtils, CastleComponentSerialize, CastleFileFilters, CastleGLUtils, CastleImages,
   CastleLog, CastleProjection, CastleStringUtils, CastleTimeUtils,
   CastleUriUtils, X3DLoad, CastleFilesUtils, CastleInternalPhysicsVisualization,
-  CastleInternalUrlUtils,
+  CastleInternalUrlUtils, CastleTerrain,
   { CGE unit to keep in uses clause even if they are not explicitly used by FrameDesign,
     to register the core CGE components for (de)serialization. }
   Castle2DSceneManager, CastleNotifications, CastleThirdPersonNavigation, CastleSoundEngine,
@@ -1900,6 +1991,11 @@ begin
     UndoSystem.Undo;
   end;}
   PerformUndoRedo(UndoSystem.Undo);
+end;
+
+procedure TDesignFrame.SpinEditHeightMapWidthChange(Sender: TObject);
+begin
+  ActionChangeHeightMapSizeUpdate(ActionChangeHeightMapSize);
 end;
 
 procedure TDesignFrame.UpdateObjectInspectorTimer(Sender: TObject);
@@ -3241,6 +3337,8 @@ begin
   FDesignerLayer.LayerPhysicsSimulation.Exists := CastleApplicationMode in [appSimulation, appSimulationPaused];
   FDesignerLayer.LabelPhysicsSimulationRunning.Exists := CastleApplicationMode = appSimulation;
   FDesignerLayer.LabelPhysicsSimulationPaused.Exists := CastleApplicationMode = appSimulationPaused;
+
+  UpdateTerrainEditMode;
 end;
 
 procedure TDesignFrame.CastleControlDragOver(Sender, Source: TObject; X,
@@ -4734,6 +4832,190 @@ begin
     Result := SelectedTransform;
 end;
 
+procedure TDesignFrame.UpdateTerrainEditMode;
+var
+  RayCollision: TRayCollision;
+  HitInfo: TRayCollisionNode;
+  Terrain: TCastleTerrain;
+  Container: TCastleContainer;
+
+  function GetTerrainBrush: TCastleTerrainBrush;
+  begin
+    if ActionChooseRaiseTerrainTool.Checked then
+    begin
+      if SpeedButtonRaiseFixedSquare.Down then
+        Exit(ctbFixedSquare);
+
+      if SpeedButtonRaiseSquare.Down then
+        Exit(ctbSquare);
+
+      if SpeedButtonRaisePyramid.Down then
+        Exit(ctbPyramid);
+
+      if SpeedButtonRaiseCircle.Down then
+        Exit(ctbCircle);
+
+      if SpeedButtonRaiseCone.Down then
+        Exit(ctbCone);
+
+      if SpeedButtonRaiseRing.Down then
+        Exit(ctbRing);
+
+      if SpeedButtonRaiseCylinder.Down then
+        Exit(ctbLyingCylinder);
+    end else
+    if ActionChooseLowerTerrainTool.Checked then
+    begin
+      if SpeedButtonLowerFixedSquare.Down then
+        Exit(ctbFixedSquare);
+
+      if SpeedButtonLowerSquare.Down then
+        Exit(ctbSquare);
+
+      if SpeedButtonLowerPyramid.Down then
+        Exit(ctbPyramid);
+
+      if SpeedButtonLowerCircle.Down then
+        Exit(ctbCircle);
+
+      if SpeedButtonLowerCone.Down then
+        Exit(ctbCone);
+
+      if SpeedButtonLowerRing.Down then
+        Exit(ctbRing);
+
+      if SpeedButtonLowerCylinder.Down then
+        Exit(ctbLyingCylinder);
+    end else
+    if ActionChooseLevelTerrainTool.Checked then
+    begin
+      if SpeedButtonLevelSquare.Down then
+        Exit(ctbSquare);
+
+      if SpeedButtonLevelPyramid.Down then
+        Exit(ctbPyramid);
+
+      if SpeedButtonLevelCircle.Down then
+        Exit(ctbCircle);
+
+      if SpeedButtonLevelCone.Down then
+        Exit(ctbCone);
+    end;
+  end;
+
+  function GetTerrainBrushSize: Integer;
+  begin
+    if ActionChooseRaiseTerrainTool.Checked then
+      Exit(SpinEditRaiseBrushSize.Value);
+
+    if ActionChooseLowerTerrainTool.Checked then
+      Exit(SpinEditLowerBrushSize.Value);
+
+    if ActionChooseLevelTerrainTool.Checked then
+      Exit(SpinEditLevelBrushSize.Value);
+  end;
+
+  function GetTerrainToolStrength: Byte;
+  begin
+    if ActionChooseRaiseTerrainTool.Checked then
+      Exit(SpinEditRaiseStrength.Value);
+
+    if ActionChooseLowerTerrainTool.Checked then
+      Exit(SpinEditLowerStrength.Value);
+
+    if ActionChooseLevelTerrainTool.Checked then
+      Exit(SpinEditLevelStrength.Value);
+  end;
+
+  function GetTerrainBrushRotation: Single;
+  begin
+    if ActionChooseRaiseTerrainTool.Checked then
+      Exit(SpinEditRaiseBrushRotation.Value);
+
+    if ActionChooseLowerTerrainTool.Checked then
+      Exit(SpinEditLowerBrushRotation.Value);
+
+    if ActionChooseLevelTerrainTool.Checked then
+      Exit(SpinEditLevelBrushRotation.Value);
+  end;
+
+  function GetTerrainMaxHeight: Byte;
+  begin
+    if ActionChooseRaiseTerrainTool.Checked then
+      Exit(SpinEditRaiseMaxHeight.Value);
+
+    if ActionChooseLowerTerrainTool.Checked then
+      Exit(0);
+
+    if ActionChooseLevelTerrainTool.Checked then
+      Exit(FTerrainLevelHeight);
+  end;
+
+  function GetTerrainRingThickness: Single;
+  begin
+    if ActionChooseRaiseTerrainTool.Checked then
+      Exit(FloatSpinRaiseRingThickness.Value);
+
+    if ActionChooseLowerTerrainTool.Checked then
+      Exit(FloatSpinLowerRingThickness.Value);
+
+    if ActionChooseLevelTerrainTool.Checked then
+      Exit(FloatSpinLevelRingThickness.Value);
+  end;
+
+begin
+  if not FIsEditingTerrain then
+    Exit;
+
+  if CurrentViewport = nil then
+    Exit;
+
+  Terrain := CurrentTransform as TCastleTerrain;
+
+  Container := CastleControl.Container;
+
+  if Container.MousePressed = [buttonLeft] then
+  begin
+    RayCollision := CurrentViewport.MouseRayHit;
+    if (RayCollision <> nil) and RayCollision.Info(HitInfo) then
+    begin
+
+      if FIsFirstTerrainLevelFrame and ActionChooseLevelTerrainTool.Checked then
+      begin
+        FTerrainLevelHeight := Terrain.EditMode.TerrainHeight(HitInfo.Point);
+        SpinEditLevelHeight.Value := FTerrainLevelHeight;
+      end;
+
+      Terrain.EditMode.AlterTerrain(Container, HitInfo.Point, GetTerrainBrush,
+      GetTerrainBrushSize, GetTerrainToolStrength, DegToRad(GetTerrainBrushRotation),
+      GetTerrainMaxHeight, GetTerrainRingThickness);
+
+      FIsFirstTerrainLevelFrame := false;
+    end;
+  end else
+  begin
+    FIsFirstTerrainLevelFrame := true;
+
+    // terrain leveling: change level value based on mouse position
+    if ActionChooseLevelTerrainTool.Checked and (Container.MousePressed = []) then
+    begin
+      RayCollision := CurrentViewport.MouseRayHit;
+      if (RayCollision <> nil) and RayCollision.Info(HitInfo) then
+      begin
+        FTerrainLevelHeight := Terrain.EditMode.TerrainHeight(HitInfo.Point);
+        SpinEditLevelHeight.Value := FTerrainLevelHeight;
+      end;
+    end;
+  end;
+end;
+
+procedure TDesignFrame.UpdateChoosenTerrainTool;
+begin
+  GroupBoxRaiseTerrainSettings.Visible := ActionChooseRaiseTerrainTool.Checked;
+  GroupBoxLowerTerrainSettings.Visible := ActionChooseLowerTerrainTool.Checked;
+  GroupBoxLevelTerrainSettings.Visible := ActionChooseLevelTerrainTool.Checked;
+end;
+
 procedure TDesignFrame.UpdateSelectedInfo;
 var
   C: TComponent;
@@ -4906,9 +5188,19 @@ begin
       { Special case to disallow editing TCastleAbstractRootTransform transformation.
         See InspectorFilter for explanation, in short: editing TCastleAbstractRootTransform
         transformation is very unintuitive. }
-      VisualizeTransformSelected.Parent := nil
+      VisualizeTransformSelected.Parent := nil;
+
+      { Hide extra tools panel (currently used only for TCastleTerrain) }
+      PanelExtraTools.Visible := false;
     end else
     begin
+      { Hide or show extra tools panel (currently used only for TCastleTerrain)}
+      if T is TCastleTerrain then
+      begin
+        PanelExtraTools.Visible := true;
+      end else
+        PanelExtraTools.Visible := false;
+
       VisualizeTransformSelected.Parent := T; // works also in case SelectedTransform is nil
     end;
   finally FreeAndNil(Selected) end;
@@ -5819,6 +6111,138 @@ begin
   OnApiReferenceOfCurrent(Self);
 end;
 
+procedure TDesignFrame.ActionChangeHeightMapSizeExecute(Sender: TObject);
+var
+  Terrain: TCastleTerrain;
+begin
+  Terrain := CurrentTransform as TCastleTerrain;
+
+  Terrain.EditMode.SetEditModeHeightMapSize(Vector2Integer(
+    SpinEditHeightMapWidth.Value, SpinEditHeightMapHeight.Value));
+end;
+
+procedure TDesignFrame.ActionChangeHeightMapSizeUpdate(Sender: TObject);
+var
+  Terrain: TCastleTerrain;
+begin
+  if not FIsEditingTerrain then
+  begin
+    ActionChangeHeightMapSize.Enabled := false;
+    Exit;
+  end;
+
+  if (CurrentTransform = nil) or (not (CurrentTransform is TCastleTerrain)) then
+  begin
+    ActionChangeHeightMapSize.Enabled := false;
+    Exit;
+  end;
+
+  Terrain := CurrentTransform as TCastleTerrain;
+
+  ActionChangeHeightMapSize.Enabled := FIsEditingTerrain and (
+  (SpinEditHeightMapHeight.Value <> Terrain.EditMode.GetEditModeHeightMapSize.Y) or
+  (SpinEditHeightMapWidth.Value <> Terrain.EditMode.GetEditModeHeightMapSize.X));
+end;
+
+procedure TDesignFrame.ActionChooseLevelTerrainToolExecute(Sender: TObject);
+begin
+  UpdateChoosenTerrainTool;
+end;
+
+procedure TDesignFrame.ActionChooseLowerTerrainToolExecute(Sender: TObject);
+begin
+  UpdateChoosenTerrainTool;
+end;
+
+procedure TDesignFrame.ActionChooseRaiseTerrainToolExecute(Sender: TObject);
+begin
+  UpdateChoosenTerrainTool;
+end;
+
+procedure TDesignFrame.ActionEditTerrainExecute(Sender: TObject);
+var
+  Terrain: TCastleTerrain;
+  Mr: TModalResult;
+  UrlBuf: String;
+begin
+  if (CurrentTransform = nil) or (not (CurrentTransform is TCastleTerrain)) then
+    Exit;
+
+  Terrain := CurrentTransform as TCastleTerrain;
+  if Terrain.Mode = ctmMesh then
+  begin
+    // Start edit mode
+    Terrain.Mode := ctmShader;
+    ControlProperties.Visible := false;
+    PanelLeft.Visible := false;
+    FIsEditingTerrain := true;
+    FDesignerLayer.Exists := false;
+    VisualizeTransformSelected.Parent := nil;
+    PanelEditTerrain.Visible := true;
+    FWasTerrainUrlUpdate := false;
+    SpinEditHeightMapHeight.Value := Terrain.EditMode.GetEditModeHeightMapSize.Y;
+    SpinEditHeightMapWidth.Value := Terrain.EditMode.GetEditModeHeightMapSize.X;
+    ActionChangeHeightMapSizeUpdate(ActionChangeHeightMapSize);
+    ProjectForm.PageControlBottom.Hide;
+  end else
+  begin
+    // Finish edit mode
+    if Terrain.EditMode.TerrainModified then
+    begin
+      Mr := MessageDlg('Terrain editor',
+        'Terrain was modified but not saved yet. Save changes?',
+        mtConfirmation, mbYesNoCancel, 0);
+      case Mr of
+        mrYes:
+        begin
+          ActionSaveTerrainExecute(Self);
+        end;
+        mrCancel: Exit;
+      end;
+    end;
+    Terrain.Mode := ctmMesh;
+    // TODO: better way to update TCastleTerrainImage
+    if FWasTerrainUrlUpdate then
+    begin
+      if (Terrain.Data <> nil) and (Terrain.Data is TCastleTerrainImage) then
+      begin
+        UrlBuf := TCastleTerrainImage(Terrain.Data).Url;
+        TCastleTerrainImage(Terrain.Data).Url := '';
+        TCastleTerrainImage(Terrain.Data).Url := UrlBuf;
+      end;
+    end;
+    ControlProperties.Visible := true;
+    PanelLeft.Visible := true;
+    FIsEditingTerrain := false;
+    FDesignerLayer.Exists := true;
+    VisualizeTransformSelected.Parent := Terrain;
+    PanelEditTerrain.Visible := false;
+    FIsFirstTerrainLevelFrame := true;
+    ProjectForm.PageControlBottom.Show;
+  end;
+
+  if Terrain.Mode = ctmMesh then
+    ActionEditTerrain.Caption := 'Edit Terrain'
+  else
+    ActionEditTerrain.Caption := 'Finish Terrain Editing';
+end;
+
+procedure TDesignFrame.ActionEditTerrainUpdate(Sender: TObject);
+var
+  Terrain: TCastleTerrain;
+begin
+  ActionEditTerrain.Enabled := (CurrentTransform <> nil) and (CurrentTransform is TCastleTerrain);
+
+  if ActionEditTerrain.Enabled then
+  begin
+    Terrain := CurrentTransform as TCastleTerrain;
+    if Terrain.Mode = ctmMesh then
+      ActionEditTerrain.Caption := 'Edit Terrain'
+    else
+      ActionEditTerrain.Caption := 'Finish Terrain Editing';
+  end;
+end;
+
 procedure TDesignFrame.ActionPlayStopUpdate(Sender: TObject);
 var
   IsRunning: Boolean;
@@ -5829,6 +6253,71 @@ begin
   else
     ActionPlayStop.ImageIndex := TImageIndex(iiPlay);
   ActionPlayStop.Checked := IsRunning;
+end;
+
+procedure TDesignFrame.ActionSaveTerrainAsExecute(Sender: TObject);
+var
+  SaveHeightImageDialog: TCastleSaveImageDialog;
+  Terrain: TCastleTerrain;
+begin
+  if not (CurrentTransform is TCastleTerrain) then
+  begin
+    ErrorBox('Wrong selected transform type. Should never happen, please report bug.');
+    Exit;
+  end;
+
+  Terrain := CurrentTransform as TCastleTerrain;
+
+  SaveHeightImageDialog := TCastleSaveImageDialog.Create(nil);
+  try
+    SaveHeightImageDialog.AdviceDataDirectory := true;
+    SaveHeightImageDialog.InitialDir := URIToFilenameSafe(ApplicationData('/'));
+    if SaveHeightImageDialog.Execute then
+    begin
+      try
+        Terrain.EditMode.SaveEditModeHeightMap(SaveHeightImageDialog.Url);
+        // update current image also in case the user selected
+        // the same file that is loaded
+        FWasTerrainUrlUpdate := true;
+      except
+        on E: Exception do
+          ErrorBox(E.Message);
+      end;
+    end;
+  finally
+    FreeAndNil(SaveHeightImageDialog);
+  end;
+end;
+
+procedure TDesignFrame.ActionSaveTerrainExecute(Sender: TObject);
+var
+  Terrain: TCastleTerrain;
+  TerrainUrl: String;
+
+  function GetTerrainUrl: String;
+  begin
+    if (Terrain.Data <> nil) and (Terrain.Data is TCastleTerrainImage) then
+      Exit(TCastleTerrainImage(Terrain.Data).Url);
+
+    Result := '';
+  end;
+
+begin
+  if not (CurrentTransform is TCastleTerrain) then
+  begin
+    ErrorBox('Wrong selected transform type. Should never happen, please report bug.');
+    Exit;
+  end;
+
+  Terrain := CurrentTransform as TCastleTerrain;
+  TerrainUrl := GetTerrainUrl;
+  if TerrainUrl <> '' then
+  begin
+    Terrain.EditMode.SaveEditModeHeightMap(TerrainUrl);
+    FWasTerrainUrlUpdate := true;
+  end
+  else
+    ActionSaveTerrainAsExecute(Sender);
 end;
 
 procedure TDesignFrame.ButtonResetTransformationClick(Sender: TObject);
@@ -5885,7 +6374,7 @@ end;
 
 procedure TDesignFrame.FrameResize(Sender: TObject);
 
-  { Buttons on top panel are resized by LCL to have height equal panel height,
+  { Buttons on top PanelExtraTools are resized by LCL to have height equal PanelExtraTools height,
     but this makes them non-square. Fix them to be square.
     Fixes problem observed on Windows. }
   procedure FixButtonSquare(const B: TSpeedButton);

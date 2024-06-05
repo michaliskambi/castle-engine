@@ -245,6 +245,9 @@
     function Enable(const TextureUnit: Cardinal;
       Shader: TShader; const Env: TTextureEnv): boolean; override;
     function GLName: TGLTextureId; override;
+    { Should be used only for temporary, after render restore the initial
+      value. Otherwise, there will be problems with freeing resources. }
+    procedure InternalSetGLName(AGLName: TGLTextureId);
   end;
 
   { Renderer resource for TMovieTextureNode. }
@@ -1022,6 +1025,11 @@ end;
 function TImageTextureResource.GLName: TGLTextureId;
 begin
   Result := FGLName;
+end;
+
+procedure TImageTextureResource.InternalSetGLName(AGLName: TGLTextureId);
+begin
+  FGLName := AGLName;
 end;
 
 { TMovieTextureResource -------------------------------------------------------- }

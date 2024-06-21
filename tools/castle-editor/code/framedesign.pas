@@ -711,7 +711,10 @@ uses
   { CGE unit to keep in uses clause even if they are not explicitly used by FrameDesign,
     to register the core CGE components for (de)serialization. }
   Castle2DSceneManager, CastleNotifications, CastleThirdPersonNavigation, CastleSoundEngine,
-  CastleBehaviors,
+  CastleBehaviors, RotateCamera, RotateRigidBody, CastleInputAxis, FollowingTargetForCamera,
+  SimpleFpsPlayerMovementWithRotation, SimplestFpsPlayerMovement, ModularMovement,
+  AnimationTrigger, FpsCrouch, Fly3DSupport, HeadBobbing, StairsSupport, Walk3DSupport,
+  Platformer2DWalkSupport, Platformer2DInAirControl, DoubleJumpSupport, InAir3DControl,
   { Editor units }
   FormProject, CastleComponentEditorDesigner;
 
@@ -5389,6 +5392,32 @@ procedure TDesignFrame.ControlsTreeDragDrop(Sender, Source: TObject; X,
         end;
     end;
   end;
+
+  (*
+  // TODO: use this to implement changing behavior order
+  procedure MoveBehaviorBeforeAfterAnotherBehavior(const Src, Dst: TCastleBehavior);
+  var
+    BehIndex: Integer;
+  begin
+    case ControlsTreeNodeUnderMouseSide of
+      tnsBottom:
+        begin
+          Src.Parent.RemoveBehavior(Src);
+          BehIndex := Dst.Parent.BehaviorIndex(Dst);
+          Dst.Parent.InsertBehavior(BehIndex + 1, Src);
+          MoveOnlyTreeNodes;
+        end;
+      tnsTop:
+        begin
+          Src.Parent.RemoveBehavior(Src);
+          BehIndex := Dst.Parent.BehaviorIndex(Dst);
+          Dst.Parent.InsertBehavior(BehIndex, Src);
+          MoveOnlyTreeNodes;
+        end;
+      else raise EInternalError.Create('ControlsTreeDragDrop:ControlsTreeNodeUnderMouseSide?');
+    end;
+  end;
+  *)
 
   procedure MoveNonVisual(
     const Src: TComponent;
